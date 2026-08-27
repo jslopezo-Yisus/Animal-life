@@ -1,0 +1,1 @@
+print("Animal-Life está listo para comenzar")

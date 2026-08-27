@@ -1,0 +1,45 @@
+# =========================
+# ENTORNOS VIRTUALES
+# =========================
+.venv/
+venv/
+env/
+
+# =========================
+# PYTHON
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# =========================
+# VARIABLES Y SECRETOS
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# VISUAL STUDIO CODE
+# =========================
+.vscode/
+
+# =========================
+# BASES DE DATOS LOCALES
+# =========================
+*.db
+*.sqlite
+*.sqlite3
+
+# =========================
+# ARCHIVOS TEMPORALES
+# =========================
+*.log
+.DS_Store
+Thumbs.db
+
+# =========================
+# ARCHIVOS SUBIDOS
+# =========================
+app/static/uploads/*
+!app/static/uploads/.gitkeep
