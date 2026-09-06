@@ -1,45 +1,34 @@
-# =========================
-# ENTORNOS VIRTUALES
-# =========================
+# Entorno virtual
 .venv/
 venv/
 env/
 
-# =========================
-# PYTHON
-# =========================
+# Variables de entorno
+.env
+
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
 
-# =========================
-# VARIABLES Y SECRETOS
-# =========================
-.env
-.env.*
-!.env.example
+# Flask
+instance/
 
-# =========================
-# VISUAL STUDIO CODE
-# =========================
-.vscode/
-
-# =========================
-# BASES DE DATOS LOCALES
-# =========================
+# Base de datos local
 *.db
 *.sqlite
 *.sqlite3
 
-# =========================
-# ARCHIVOS TEMPORALES
-# =========================
+# Archivos temporales
 *.log
-.DS_Store
-Thumbs.db
 
-# =========================
-# ARCHIVOS SUBIDOS
-# =========================
+# Archivos subidos por usuarios
 app/static/uploads/*
 !app/static/uploads/.gitkeep
+
+# VS Code
+.vscode/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
