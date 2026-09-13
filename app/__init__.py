@@ -14,16 +14,18 @@ def create_app():
     # Inicializar base de datos
     db.init_app(app)
 
-    # Registrar controladores
+    # Importar modelos
+    from app.models.rol import Rol
+    from app.models.usuario import Usuario
+
+    # Registrar controlador principal
     from app.controllers.main_controller import main
 
     app.register_blueprint(main)
 
-    # Importar modelos
-    from app.models.usuario import Usuario
+    # Registrar controlador de autenticación
+    from app.controllers.auth_controller import auth
 
-    # Crear tablas
-    with app.app_context():
-        db.create_all()
+    app.register_blueprint(auth)
 
     return app

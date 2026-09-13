@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% block title %}
+Registro | Animal-Life
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-8 col-lg-6">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4">
+
+                    <div class="text-center mb-4">
+
+                        <h1 class="fw-bold">
+                            Crear cuenta
+                        </h1>
+
+                        <p class="text-muted">
+                            Únete a Animal-Life
+                        </p>
+
+                    </div>
+
+
+                    {% if error %}
+                        <div class="alert alert-danger">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+
+
+                    {% if success %}
+                        <div class="alert alert-success">
+                            {{ success }}
+                        </div>
+                    {% endif %}
+
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('main.registro') }}"
+                    >
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+
+                                <label
+                                    for="nombre"
+                                    class="form-label"
+                                >
+                                    Nombre
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="nombre"
+                                    name="nombre"
+                                    maxlength="100"
+                                    required
+                                    value="{{ request.form.get('nombre', '') }}"
+                                >
+
+                            </div>
+
+
+                            <div class="col-md-6 mb-3">
+
+                                <label
+                                    for="apellido"
+                                    class="form-label"
+                                >
+                                    Apellido
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="apellido"
+                                    name="apellido"
+                                    maxlength="100"
+                                    required
+                                    value="{{ request.form.get('apellido', '') }}"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label
+                                for="correo"
+                                class="form-label"
+                            >
+                                Correo electrónico
+                            </label>
+
+                            <input
+                                type="email"
+                                class="form-control"
+                                id="correo"
+                                name="correo"
+                                maxlength="150"
+                                required
+                                value="{{ request.form.get('correo', '') }}"
+                            >
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label
+                                for="telefono"
+                                class="form-label"
+                            >
+                                Teléfono
+                            </label>
+
+                            <input
+                                type="tel"
+                                class="form-control"
+                                id="telefono"
+                                name="telefono"
+                                maxlength="20"
+                                value="{{ request.form.get('telefono', '') }}"
+                            >
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label
+                                for="direccion"
+                                class="form-label"
+                            >
+                                Dirección
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="direccion"
+                                name="direccion"
+                                maxlength="255"
+                                value="{{ request.form.get('direccion', '') }}"
+                            >
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label
+                                for="password"
+                                class="form-label"
+                            >
+                                Contraseña
+                            </label>
+
+                            <input
+                                type="password"
+                                class="form-control"
+                                id="password"
+                                name="password"
+                                minlength="8"
+                                required
+                            >
+
+                            <div class="form-text">
+                                La contraseña debe tener mínimo 8 caracteres.
+                            </div>
+
+                        </div>
+
+
+                        <div class="mb-4">
+
+                            <label
+                                for="confirm_password"
+                                class="form-label"
+                            >
+                                Confirmar contraseña
+                            </label>
+
+                            <input
+                                type="password"
+                                class="form-control"
+                                id="confirm_password"
+                                name="confirm_password"
+                                minlength="8"
+                                required
+                            >
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100"
+                        >
+                            Crear cuenta
+                        </button>
+
+                    </form>
+
+
+                    <div class="text-center mt-4">
+
+                        <span class="text-muted">
+                            ¿Ya tienes una cuenta?
+                        </span>
+
+                        <a href="#">
+                            Iniciar sesión
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
