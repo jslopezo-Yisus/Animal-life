@@ -1,7 +1,7 @@
--- ============================================================
+
 -- ANIMAL-LIFE
 -- Base de datos principal
--- ============================================================
+
 
 CREATE DATABASE IF NOT EXISTS animal_life
 CHARACTER SET utf8mb4
@@ -10,9 +10,9 @@ COLLATE utf8mb4_unicode_ci;
 USE animal_life;
 
 
--- ============================================================
+
 -- 1. ROLES
--- ============================================================
+
 
 CREATE TABLE IF NOT EXISTS roles (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -22,9 +22,9 @@ CREATE TABLE IF NOT EXISTS roles (
 );
 
 
--- ============================================================
+
 -- 2. USUARIOS
--- ============================================================
+
 
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -48,9 +48,8 @@ CREATE TABLE IF NOT EXISTS usuarios (
 );
 
 
--- ============================================================
 -- 3. ANIMALES
--- ============================================================
+
 
 CREATE TABLE IF NOT EXISTS animales (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -70,9 +69,9 @@ CREATE TABLE IF NOT EXISTS animales (
 );
 
 
--- ============================================================
+
 -- 4. ESTADOS DE REPORTE
--- ============================================================
+
 
 CREATE TABLE IF NOT EXISTS estados_reporte (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -81,9 +80,9 @@ CREATE TABLE IF NOT EXISTS estados_reporte (
 );
 
 
--- ============================================================
+
 -- 5. REPORTES
--- ============================================================
+
 
 CREATE TABLE IF NOT EXISTS reportes (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -120,9 +119,9 @@ CREATE TABLE IF NOT EXISTS reportes (
 );
 
 
--- ============================================================
+
 -- 6. EVIDENCIAS
--- ============================================================
+
 
 CREATE TABLE IF NOT EXISTS evidencias (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -140,9 +139,9 @@ CREATE TABLE IF NOT EXISTS evidencias (
 );
 
 
--- ============================================================
+
 -- 7. SERVICIOS
--- ============================================================
+
 
 CREATE TABLE IF NOT EXISTS servicios (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -155,9 +154,9 @@ CREATE TABLE IF NOT EXISTS servicios (
 );
 
 
--- ============================================================
+
 -- 8. CITAS
--- ============================================================
+
 
 CREATE TABLE IF NOT EXISTS citas (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -192,9 +191,9 @@ CREATE TABLE IF NOT EXISTS citas (
 );
 
 
--- ============================================================
+
 -- 9. ADOPCIONES
--- ============================================================
+
 
 CREATE TABLE IF NOT EXISTS adopciones (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -219,9 +218,9 @@ CREATE TABLE IF NOT EXISTS adopciones (
 );
 
 
--- ============================================================
+
 -- 10. NOTIFICACIONES
--- ============================================================
+
 
 CREATE TABLE IF NOT EXISTS notificaciones (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -240,9 +239,9 @@ CREATE TABLE IF NOT EXISTS notificaciones (
 );
 
 
--- ============================================================
+
 -- 11. ACCESOS
--- ============================================================
+
 
 CREATE TABLE IF NOT EXISTS accesos (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -265,9 +264,9 @@ CREATE TABLE IF NOT EXISTS accesos (
 );
 
 
--- ============================================================
+
 -- DATOS INICIALES
--- ============================================================
+
 
 INSERT IGNORE INTO roles
     (id, nombre, descripcion)
@@ -330,9 +329,3 @@ VALUES
         30
     );
 
-
--- ============================================================
--- VERIFICACIÓN
--- ============================================================
-
-SHOW TABLES;
