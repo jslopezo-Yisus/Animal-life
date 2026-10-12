@@ -1,0 +1,100 @@
+
+{% extends "base.html" %}
+
+{% block title %}Mis reportes | Animal-Life{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="d-flex flex-wrap justify-content-between
+                align-items-center gap-3 mb-4">
+
+        <div>
+            <h1 class="fw-bold">Mis reportes</h1>
+            <p class="text-muted mb-0">
+                Consulta el estado y el seguimiento de tus casos.
+            </p>
+        </div>
+
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('main.panel_ciudadano') }}"
+               class="btn btn-outline-secondary">
+                Mi espacio
+            </a>
+
+            <a href="{{ url_for('main.crear_reporte') }}"
+               class="btn btn-primary">
+                + Nuevo reporte
+            </a>
+        </div>
+    </div>
+
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+        {% for categoria, mensaje in mensajes %}
+            <div class="alert alert-{{ categoria }} alert-dismissible fade show"
+                 role="alert">
+                {{ mensaje }}
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Cerrar"></button>
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    {% if reportes %}
+        <div class="card shadow-sm border-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>N.º</th>
+                            <th>Título</th>
+                            <th>Tipo</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for reporte in reportes %}
+                            <tr>
+                                <td>#{{ reporte.id }}</td>
+                                <td>
+                                    <a href="{{ url_for('main.detalle_reporte', reporte_id=reporte.id) }}"
+                                        class="text-decoration-none fw-semibold">
+                                        {{ reporte.titulo }}
+                                    </a>
+                                </td>
+                                <td>{{ reporte.tipo }}</td>
+                                <td>
+                                    {{ reporte.fecha_creacion.strftime('%d/%m/%Y') }}
+                                </td>
+                                <td>
+                                    <span class="badge text-bg-secondary">
+                                        {{ reporte.estado.nombre }}
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center py-5">
+                <h4>Aún no tienes reportes registrados</h4>
+                <p class="text-muted">
+                    Aquí aparecerán los casos que registres en Animal-Life.
+                </p>
+                <a href="{{ url_for('main.crear_reporte') }}"
+                   class="btn btn-primary">
+                    Registrar mi primer reporte
+                </a>
+            </div>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,182 @@
+
+{% extends "base.html" %}
+
+{% block title %}Gestión de reportes | Animal-Life{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="mb-4">
+        <h1 class="fw-bold">Gestión de reportes</h1>
+        <p class="text-muted">
+            Consulta los casos registrados y actualiza su estado.
+        </p>
+    </div>
+
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+        {% for categoria, mensaje in mensajes %}
+            <div class="alert alert-{{ categoria }} alert-dismissible fade show"
+                 role="alert">
+                {{ mensaje }}
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Cerrar"></button>
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <form method="GET"
+                  action="{{ url_for('main.gestionar_reportes') }}"
+                  class="row g-3 align-items-end">
+
+                <div class="col-lg-6">
+                    <label for="buscar" class="form-label">
+                        Buscar reporte o ciudadano
+                    </label>
+                    <input type="text"
+                           id="buscar"
+                           name="buscar"
+                           class="form-control"
+                           value="{{ buscar }}"
+                           placeholder="Título, tipo, nombre o correo">
+                </div>
+
+                <div class="col-lg-4">
+                    <label for="estado" class="form-label">
+                        Estado
+                    </label>
+                    <select id="estado"
+                            name="estado"
+                            class="form-select">
+                        <option value="">Todos los estados</option>
+                        {% for estado in estados %}
+                            <option value="{{ estado.id }}"
+                                {% if filtro_estado == estado.id|string %}
+                                    selected
+                                {% endif %}>
+                                {{ estado.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-lg-2 d-grid">
+                    <button type="submit" class="btn btn-primary">
+                        Buscar
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+
+            <h5 class="fw-bold mb-3">
+                Reportes registrados
+                <span class="badge text-bg-secondary">
+                    {{ reportes|length }}
+                </span>
+            </h5>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>N.º</th>
+                            <th>Reporte</th>
+                            <th>Ciudadano</th>
+                            <th>Fecha</th>
+                            <th>Estado actual</th>
+                            <th>Actualizar estado</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for reporte in reportes %}
+                            <tr>
+                                <td>#{{ reporte.id }}</td>
+
+                                <td>
+                                    <strong>{{ reporte.titulo }}</strong>
+                                    <div class="small text-muted">
+                                        {{ reporte.tipo }}
+                                    </div>
+                                    <a class="small"
+                                       href="{{ url_for(
+                                           'main.detalle_reporte',
+                                           reporte_id=reporte.id
+                                       ) }}">
+                                        Ver detalle
+                                    </a>
+                                </td>
+
+                                <td>
+                                    <strong>
+                                        {{ reporte.usuario.nombre }} {{ reporte.usuario.apellido }}
+                                    </strong>
+                                        <div class="small text-muted">
+                                        {{ reporte.usuario.correo }}
+                                        </div>
+                                </td>
+
+                                <td>
+                                    {{ reporte.fecha_creacion.strftime('%d/%m/%Y') }}
+                                </td>
+
+                                <td>
+                                    <span class="badge text-bg-secondary">
+                                        {{ reporte.estado.nombre }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <form method="POST"
+                                          action="{{ url_for(
+                                              'main.actualizar_estado_reporte',
+                                              reporte_id=reporte.id
+                                          ) }}"
+                                          class="d-flex gap-2">
+
+                                        <select name="estado_id"
+                                                class="form-select form-select-sm"
+                                                aria-label="Nuevo estado"
+                                                required>
+                                            {% for estado in estados %}
+                                                <option value="{{ estado.id }}"
+                                                    {% if estado.id == reporte.estado_id %}
+                                                        selected
+                                                    {% endif %}>
+                                                    {{ estado.nombre }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+
+                                        <button type="submit"
+                                                class="btn btn-outline-primary btn-sm">
+                                            Guardar
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="6"
+                                    class="text-center py-4 text-muted">
+                                    No se encontraron reportes.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

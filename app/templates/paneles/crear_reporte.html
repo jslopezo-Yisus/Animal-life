@@ -1,0 +1,119 @@
+
+{% extends "base.html" %}
+
+{% block title %}Crear reporte | Animal-Life{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="mb-4">
+                <a href="{{ url_for('main.mis_reportes') }}"
+                   class="btn btn-outline-secondary mb-3">
+                    Volver a mis reportes
+                </a>
+
+                <h1 class="fw-bold">Registrar un reporte</h1>
+                <p class="text-muted">
+                    Describe la situación para facilitar su
+                    atención y seguimiento.
+                </p>
+            </div>
+
+            {% with mensajes = get_flashed_messages(with_categories=true) %}
+                {% for categoria, mensaje in mensajes %}
+                    <div class="alert alert-{{ categoria }} alert-dismissible fade show"
+                         role="alert">
+                        {{ mensaje }}
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                                aria-label="Cerrar"></button>
+                    </div>
+                {% endfor %}
+            {% endwith %}
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+
+                    <form method="POST"
+                          action="{{ url_for('main.crear_reporte') }}">
+
+                        <div class="mb-3">
+                            <label for="tipo" class="form-label">
+                                Tipo de reporte *
+                            </label>
+
+                            <select id="tipo"
+                                    name="tipo"
+                                    class="form-select"
+                                    required>
+                                <option value="">Selecciona un tipo</option>
+                                <option value="Abandono">Abandono</option>
+                                <option value="Maltrato">Maltrato</option>
+                                <option value="Salud">Salud</option>
+                                <option value="Bienestar">Bienestar</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="titulo" class="form-label">
+                                Título del reporte *
+                            </label>
+
+                            <input type="text"
+                                   id="titulo"
+                                   name="titulo"
+                                   class="form-control"
+                                   maxlength="150"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label">
+                                Descripción de la situación *
+                            </label>
+
+                            <textarea id="descripcion"
+                                      name="descripcion"
+                                      class="form-control"
+                                      rows="5"
+                                      required></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="direccion" class="form-label">
+                                Dirección del caso
+                            </label>
+
+                            <input type="text"
+                                   id="direccion"
+                                   name="direccion"
+                                   class="form-control"
+                                   maxlength="255"
+                                   placeholder="Dirección o lugar donde ocurrió">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            Registrar reporte
+                        </button>
+
+                        <a href="{{ url_for('main.mis_reportes') }}"
+                           class="btn btn-outline-secondary ms-2">
+                            Cancelar
+                        </a>
+
+                    </form>
+                </div>
+            </div>
+
+            <p class="text-muted small mt-3">
+                Los campos marcados con * son obligatorios.
+            </p>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

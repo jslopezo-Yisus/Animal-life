@@ -5,6 +5,10 @@ from app.extensions import db
 
 
 def create_app():
+    
+    from app.models.animal import Animal
+    from app.models.estado_reporte import EstadoReporte
+    from app.models.reporte import Reporte
 
     app = Flask(__name__)
 
@@ -17,6 +21,8 @@ def create_app():
     # Importar modelos
     from app.models.rol import Rol
     from app.models.usuario import Usuario
+    from app.models.estado_reporte import EstadoReporte
+    from app.models.reporte import Reporte
 
     # Registrar controlador principal
     from app.controllers.main_controller import main

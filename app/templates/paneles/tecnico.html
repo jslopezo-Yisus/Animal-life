@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Panel técnico | Animal-Life{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="fw-bold">Panel técnico</h1>
+    <p class="text-muted">
+        Gestión de tareas y seguimiento de casos asignados.
+    </p>
+
+    <div class="row g-4 mt-2">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5>Mis asignaciones</h5>
+                    <p>Consulta los trabajos que tienes asignados.</p>
+                    <span class="badge text-bg-secondary">Próximamente</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5>Actualizar casos</h5>
+                    <p>Registra avances y cambios de estado.</p>
+                    <span class="badge text-bg-secondary">Próximamente</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5>Evidencias</h5>
+                    <p>Consulta las evidencias asociadas a los casos.</p>
+                    <span class="badge text-bg-secondary">Próximamente</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

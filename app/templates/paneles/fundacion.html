@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Panel de fundación | Animal-Life{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="fw-bold">Panel de la fundación</h1>
+    <p class="text-muted">
+        Espacio de gestión de animales, rescates y adopciones.
+    </p>
+
+    <div class="row g-4 mt-2">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5>Animales</h5>
+                    <p>Consulta y administra los animales registrados.</p>
+                    <span class="badge text-bg-secondary">Próximamente</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5>Adopciones</h5>
+                    <p>Gestiona las solicitudes y los procesos de adopción.</p>
+                    <span class="badge text-bg-secondary">Próximamente</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5>Seguimiento</h5>
+                    <p>Consulta el estado de los procesos a tu cargo.</p>
+                    <span class="badge text-bg-secondary">Próximamente</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

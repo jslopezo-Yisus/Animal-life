@@ -1,0 +1,306 @@
+
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Animal-Life{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <div class="mb-4">
+        <h1 class="fw-bold">Dashboard Animal-Life</h1>
+        <p class="text-muted">
+            Indicadores generales de los reportes de la plataforma.
+        </p>
+    </div>
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Total de reportes</h6>
+                    <h2 class="fw-bold">
+                        {{ indicadores.total_reportes }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Reportes pendientes</h6>
+                    <h2 class="fw-bold">
+                        {{ indicadores.reportes_pendientes }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Reportes resueltos</h6>
+                    <h2 class="fw-bold">
+                        {{ indicadores.reportes_resueltos }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    
+<!-- Gráficos analíticos -->
+<div class="row g-4 mb-4">
+
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">
+                    Distribución por estado
+                </h5>
+                <div style="height: 320px;">
+                    <canvas id="graficoEstados"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">
+                    Reportes por tipo
+                </h5>
+                <div style="height: 320px;">
+                    <canvas id="graficoTipos"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">
+                    Evolución mensual de reportes
+                </h5>
+                <div style="height: 320px;">
+                    <canvas id="graficoMensual"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="fw-bold">Reportes por estado</h5>
+
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>Estado</th>
+                            <th>Total de reportes</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for reporte in reportes_estado %}
+                        <tr>
+                            <td>{{ reporte.estado }}</td>
+                            <td>{{ reporte.total_reportes }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="2">
+                                No hay datos disponibles.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="fw-bold">Reportes por tipo</h5>
+
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>Tipo de reporte</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for reporte in reportes_tipo %}
+                        <tr>
+                            <td>{{ reporte.tipo }}</td>
+                            <td>{{ reporte.total_reportes }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="2">
+                                No hay datos disponibles.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="fw-bold">Evolución mensual</h5>
+
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>Año</th>
+                            <th>Mes</th>
+                            <th>Total de reportes</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for reporte in reportes_mes %}
+                        <tr>
+                            <td>{{ reporte.anio }}</td>
+                            <td>{{ reporte.nombre_mes }}</td>
+                            <td>{{ reporte.total_reportes }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="3">
+                                No hay datos disponibles.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const estados = {{ reportes_estado | map(attribute='estado') | list | tojson }};
+    const cantidadesEstados = {{ reportes_estado | map(attribute='total_reportes') | list | tojson }};
+
+    const tipos = {{ reportes_tipo | map(attribute='tipo') | list | tojson }};
+    const cantidadesTipos = {{ reportes_tipo | map(attribute='total_reportes') | list | tojson }};
+
+    const meses = {{ reportes_mes | map(attribute='nombre_mes') | list | tojson }};
+    const cantidadesMeses = {{ reportes_mes | map(attribute='total_reportes') | list | tojson }};
+
+    new Chart(document.getElementById("graficoEstados"), {
+        type: "doughnut",
+        data: {
+            labels: estados,
+            datasets: [{
+                label: "Reportes",
+                data: cantidadesEstados
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    new Chart(document.getElementById("graficoTipos"), {
+        type: "bar",
+        data: {
+            labels: tipos,
+            datasets: [{
+                label: "Total de reportes",
+                data: cantidadesTipos
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        }
+    });
+
+    
+    new Chart(document.getElementById("graficoMensual"), {
+        type: "line",
+        data: {
+            labels: meses,
+            datasets: [{
+                label: "Reportes registrados",
+                data: cantidadesMeses,
+                tension: 0.3,
+                fill: false,
+                pointRadius: 6,
+                pointHoverRadius: 9,
+                pointBorderWidth: 2,
+                borderWidth: 3,
+                spanGaps: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: "top"
+                },
+                tooltip: {
+                    enabled: true
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    },
+                    title: {
+                        display: true,
+                        text: "Cantidad de reportes"
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: "Mes de registro"
+                    }
+                }
+            }
+        }
+    });
+
+
+});
+</script>
+
+{% endblock %}

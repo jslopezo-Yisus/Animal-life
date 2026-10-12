@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Panel administrativo | Animal-Life{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="fw-bold">Panel administrativo</h1>
+    <p class="text-muted">
+        Centro de control y supervisión de Animal-Life.
+    </p>
+
+    <div class="col-md-6 col-lg-4">
+    <div class="card shadow-sm h-100">
+        <div class="card-body">
+            <div class="mb-3 text-primary">
+                <i class="bi bi-people fs-2"></i>
+            </div>
+
+            <h5 class="fw-bold">Usuarios</h5>
+
+            <p class="text-muted">
+                Consulta las cuentas registradas, administra sus roles
+                y controla su estado.
+            </p>
+
+            <a href="{{ url_for('main.administrar_usuarios') }}"
+               class="btn btn-primary">
+                Gestionar usuarios
+            </a>
+        </div>
+    </div>
+</div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5>Reportes</h5>
+                    <p>Supervisión de los casos registrados.</p>
+                    <span class="badge text-bg-secondary">Próximamente</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5>Administración</h5>
+                    <p>Configuración general de la plataforma.</p>
+                    <span class="badge text-bg-secondary">Próximamente</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

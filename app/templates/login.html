@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar sesión | Animal-Life{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-6 col-lg-5">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="text-center mb-4">
+
+                        <h2 class="fw-bold">
+                            Iniciar sesión
+                        </h2>
+
+                        <p class="text-muted mb-0">
+                            Ingresa a tu cuenta de Animal-Life
+                        </p>
+
+                    </div>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+
+    {% if messages %}
+
+        {% for category, message in messages %}
+
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+
+                {{ message }}
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+                </button>
+
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+{% endwith %}
+
+                    <form method="POST" action="{{ url_for('auth.login') }}">
+
+                        <div class="mb-3">
+
+                            <label for="correo" class="form-label">
+                                Correo electrónico
+                            </label>
+
+                            <input
+                                type="email"
+                                class="form-control"
+                                id="correo"
+                                name="correo"
+                                placeholder="correo@ejemplo.com"
+                                required
+                                autocomplete="email"
+                            >
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label for="password" class="form-label">
+                                Contraseña
+                            </label>
+
+                            <input
+                                type="password"
+                                class="form-control"
+                                id="password"
+                                name="password"
+                                placeholder="Ingresa tu contraseña"
+                                required
+                                autocomplete="current-password"
+                            >
+
+                        </div>
+
+
+                        <div class="d-grid mt-4">
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+                                Iniciar sesión
+                            </button>
+
+                        </div>
+
+                    </form>
+
+
+                    <div class="text-center mt-4">
+
+                        <p class="mb-0 text-muted">
+                            ¿No tienes una cuenta?
+                        </p>
+
+                        <a
+                            href="{{ url_for('main.registro') }}"
+                            class="text-decoration-none"
+                        >
+                            Crear una cuenta
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
