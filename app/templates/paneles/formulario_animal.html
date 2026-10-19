@@ -1,0 +1,175 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+    {% if animal %}Editar animal{% else %}Registrar animal{% endif %} | Animal-Life
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="mb-4">
+        <h1 class="fw-bold">
+            {% if animal %}Editar animal{% else %}Registrar animal{% endif %}
+        </h1>
+        <p class="text-muted">
+            Completa la información para mantener actualizado el registro.
+        </p>
+    </div>
+
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+        {% if mensajes %}
+            {% for categoria, mensaje in mensajes %}
+                <div class="alert alert-{{ categoria }} alert-dismissible fade show"
+                     role="alert">
+                    {{ mensaje }}
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Cerrar"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+
+            <form method="POST"
+                  action="{% if animal %}{{ url_for('main.editar_animal', animal_id=animal.id) }}{% else %}{{ url_for('main.crear_animal') }}{% endif %}">
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label for="nombre" class="form-label">
+                            Nombre *
+                        </label>
+                        <input type="text"
+                               id="nombre"
+                               name="nombre"
+                               class="form-control"
+                               maxlength="100"
+                               value="{{ request.form.get('nombre', animal.nombre if animal else '') }}"
+                               required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="especie" class="form-label">
+                            Especie *
+                        </label>
+                        <select id="especie"
+                                name="especie"
+                                class="form-select"
+                                required>
+                            <option value="">Selecciona una especie</option>
+                            {% for item in ['Perro', 'Gato', 'Ave', 'Conejo', 'Otro'] %}
+                                <option value="{{ item }}"
+                                    {% if request.form.get('especie', animal.especie if animal else '') == item %}selected{% endif %}>
+                                    {{ item }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="raza" class="form-label">Raza</label>
+                        <input type="text"
+                               id="raza"
+                               name="raza"
+                               class="form-control"
+                               maxlength="100"
+                               value="{{ request.form.get('raza', animal.raza if animal else '') }}">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="sexo" class="form-label">Sexo</label>
+                        <select id="sexo" name="sexo" class="form-select">
+                            <option value="">No especificado</option>
+                            {% for item in ['Macho', 'Hembra'] %}
+                                <option value="{{ item }}"
+                                    {% if request.form.get('sexo', animal.sexo if animal else '') == item %}selected{% endif %}>
+                                    {{ item }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="fecha_nacimiento" class="form-label">
+                            Fecha de nacimiento
+                        </label>
+                        <input type="date"
+                               id="fecha_nacimiento"
+                               name="fecha_nacimiento"
+                               class="form-control"
+                               max="{{ today }}"
+                               value="{{ request.form.get('fecha_nacimiento', animal.fecha_nacimiento.isoformat() if animal and animal.fecha_nacimiento else '') }}">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="tamano" class="form-label">Tamaño</label>
+                        <select id="tamano" name="tamano" class="form-select">
+                            <option value="">No especificado</option>
+                            {% for item in ['Pequeño', 'Mediano', 'Grande'] %}
+                                <option value="{{ item }}"
+                                    {% if request.form.get('tamano', animal.tamano if animal else '') == item %}selected{% endif %}>
+                                    {{ item }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="color" class="form-label">Color</label>
+                        <input type="text"
+                               id="color"
+                               name="color"
+                               class="form-control"
+                               maxlength="100"
+                               value="{{ request.form.get('color', animal.color if animal else '') }}">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="estado" class="form-label">Estado *</label>
+                        <select id="estado"
+                                name="estado"
+                                class="form-select"
+                                required>
+                            {% for item in estados %}
+                                <option value="{{ item }}"
+                                    {% if request.form.get('estado', animal.estado if animal else 'Disponible') == item %}selected{% endif %}>
+                                    {{ item }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="descripcion" class="form-label">
+                            Descripción
+                        </label>
+                        <textarea id="descripcion"
+                                  name="descripcion"
+                                  class="form-control"
+                                  rows="4">{{ request.form.get('descripcion', animal.descripcion if animal else '') }}</textarea>
+                    </div>
+
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        {% if animal %}Guardar cambios{% else %}Registrar animal{% endif %}
+                    </button>
+
+                    <a href="{{ url_for('main.gestionar_animales') }}"
+                       class="btn btn-outline-secondary">
+                        Cancelar
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

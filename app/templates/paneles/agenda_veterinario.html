@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Agenda veterinaria | Animal-Life{% endblock %}
+{% block content %}
+<div class="container py-5">
+<div class="d-flex justify-content-between align-items-center mb-4"><div><h1>Agenda de citas</h1><p class="text-muted">Solicitudes registradas en Animal-Life.</p></div><a class="btn btn-outline-secondary" href="{{ url_for('main.panel_veterinario') }}">Volver al panel</a></div>
+<div class="card shadow-sm"><div class="card-body">{% if citas %}<div class="table-responsive"><table class="table table-hover align-middle"><thead><tr><th>Fecha</th><th>Hora</th><th>Animal</th><th>Servicio</th><th>Ciudadano</th><th>Estado</th><th>Observaciones</th></tr></thead><tbody>{% for cita in citas %}<tr><td>{{ cita.fecha.strftime('%d/%m/%Y') }}</td><td>{{ cita.hora.strftime('%H:%M') }}</td><td>{{ cita.animal.nombre if cita.animal else 'Sin animal' }}</td><td>{{ cita.servicio.nombre if cita.servicio else 'Sin servicio' }}</td><td>{{ cita.usuario.nombre if cita.usuario else 'Sin usuario' }}</td><td><span class="badge text-bg-secondary">{{ cita.estado }}</span></td><td>{{ cita.observaciones or 'Sin observaciones' }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="text-center py-5">No hay citas registradas.</p>{% endif %}</div></div>
+</div>
+{% endblock %}

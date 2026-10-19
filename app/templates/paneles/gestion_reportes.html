@@ -92,7 +92,9 @@
                             <th>Ciudadano</th>
                             <th>Fecha</th>
                             <th>Estado actual</th>
-                            <th>Actualizar estado</th>
+<th>Responsable asignado</th>
+<th>Actualizar estado</th>
+<th>Asignar responsable</th>
                         </tr>
                     </thead>
 
@@ -129,10 +131,24 @@
                                 </td>
 
                                 <td>
-                                    <span class="badge text-bg-secondary">
-                                        {{ reporte.estado.nombre }}
-                                    </span>
-                                </td>
+    <span class="badge text-bg-secondary">
+        {{ reporte.estado.nombre }}
+    </span>
+</td>
+
+<td>
+    {% if reporte.responsable %}
+        <strong>
+            {{ reporte.responsable.nombre }}
+            {{ reporte.responsable.apellido }}
+        </strong>
+        <div class="small text-muted">
+            {{ reporte.responsable.rol.nombre }}
+        </div>
+    {% else %}
+        <span class="text-muted">Sin asignar</span>
+    {% endif %}
+</td>
 
                                 <td>
                                     <form method="POST"
@@ -162,10 +178,43 @@
                                         </button>
                                     </form>
                                 </td>
+                                
+<td>
+    <form method="POST"
+          action="{{ url_for(
+              'main.asignar_responsable_reporte',
+              reporte_id=reporte.id
+          ) }}"
+          class="d-flex gap-2">
+
+        <select name="responsable_id"
+                class="form-select form-select-sm"
+                aria-label="Seleccionar responsable"
+                required>
+
+            <option value="">Seleccionar responsable</option>
+
+            {% for responsable in responsables %}
+                <option value="{{ responsable.id }}"
+                    {% if reporte.responsable_id == responsable.id %}
+                        selected
+                    {% endif %}>
+                    {{ responsable.nombre }} {{ responsable.apellido }}
+                    ({{ responsable.rol.nombre }})
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit"
+                class="btn btn-outline-success btn-sm">
+            Asignar
+        </button>
+    </form>
+</td>
                             </tr>
                         {% else %}
                             <tr>
-                                <td colspan="6"
+                                <td colspan="8"
                                     class="text-center py-4 text-muted">
                                     No se encontraron reportes.
                                 </td>

@@ -1,0 +1,174 @@
+
+{% extends "base.html" %}
+
+{% block title %}Gestión de adopciones | Animal-Life{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h1 class="fw-bold mb-1">Gestión de adopciones</h1>
+            <p class="text-muted mb-0">
+                Revisa las solicitudes y registra las decisiones de la fundación.
+            </p>
+        </div>
+        <a href="{{ url_for('main.panel_fundacion') }}"
+           class="btn btn-outline-secondary">
+            Volver al panel
+        </a>
+    </div>
+
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+        {% if mensajes %}
+            {% for categoria, mensaje in mensajes %}
+                <div class="alert alert-{{ categoria }} alert-dismissible fade show">
+                    {{ mensaje }}
+                    <button type="button" class="btn-close"
+                            data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <form method="GET"
+                  action="{{ url_for('main.gestionar_adopciones') }}"
+                  class="row g-3 align-items-end">
+
+                <div class="col-md-5">
+                    <label for="estado" class="form-label">
+                        Filtrar por estado
+                    </label>
+                    <select id="estado" name="estado" class="form-select">
+                        <option value="">Todos los estados</option>
+                        {% for estado in estados %}
+                            <option value="{{ estado }}"
+                                {% if filtro_estado == estado %}selected{% endif %}>
+                                {{ estado }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">
+                        Filtrar
+                    </button>
+                    <a href="{{ url_for('main.gestionar_adopciones') }}"
+                       class="btn btn-outline-secondary">
+                        Limpiar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0">
+                Solicitudes registradas
+                <span class="badge text-bg-secondary">
+                    {{ solicitudes|length }}
+                </span>
+            </h5>
+        </div>
+
+        <div class="card-body p-0">
+            {% if solicitudes %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Animal</th>
+                                <th>Solicitante</th>
+                                <th>Correo</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                                <th>Observaciones</th>
+                                <th>Decisión</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for solicitud in solicitudes %}
+                                <tr>
+                                    <td>{{ solicitud.id }}</td>
+                                    <td>
+                                        <strong>{{ solicitud.animal.nombre }}</strong>
+                                        <br>
+                                        <small class="text-muted">
+                                            {{ solicitud.animal.especie }}
+                                            {% if solicitud.animal.raza %}
+                                                · {{ solicitud.animal.raza }}
+                                            {% endif %}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        {{ solicitud.usuario.nombre }}
+                                        {{ solicitud.usuario.apellido }}
+                                    </td>
+                                    <td>{{ solicitud.usuario.correo }}</td>
+                                    <td>
+                                        {{ solicitud.fecha_solicitud.strftime('%d/%m/%Y %H:%M')
+                                           if solicitud.fecha_solicitud else '-' }}
+                                    </td>
+                                    <td>
+                                        {% if solicitud.estado == 'Pendiente' %}
+                                            <span class="badge text-bg-warning">Pendiente</span>
+                                        {% elif solicitud.estado == 'Aprobada' %}
+                                            <span class="badge text-bg-success">Aprobada</span>
+                                        {% else %}
+                                            <span class="badge text-bg-secondary">Rechazada</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ solicitud.observaciones or '-' }}</td>
+                                    <td>
+                                        {% if solicitud.estado == 'Pendiente' %}
+                                            <form method="POST"
+                                                  action="{{ url_for('main.resolver_adopcion', solicitud_id=solicitud.id) }}"
+                                                  class="d-grid gap-2"
+                                                  onsubmit="return confirm('¿Confirmas esta decisión?');">
+
+                                                <textarea name="observaciones"
+                                                          class="form-control form-control-sm"
+                                                          rows="2"
+                                                          placeholder="Observaciones opcionales"></textarea>
+
+                                                <button type="submit"
+                                                        name="estado"
+                                                        value="Aprobada"
+                                                        class="btn btn-sm btn-success">
+                                                    Aprobar
+                                                </button>
+
+                                                <button type="submit"
+                                                        name="estado"
+                                                        value="Rechazada"
+                                                        class="btn btn-sm btn-outline-danger">
+                                                    Rechazar
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <span class="text-muted">Resuelta</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center p-5">
+                    <h5>No hay solicitudes para mostrar</h5>
+                    <p class="text-muted mb-0">
+                        Las solicitudes de los ciudadanos aparecerán aquí.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

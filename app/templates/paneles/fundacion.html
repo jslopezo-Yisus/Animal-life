@@ -1,35 +1,67 @@
+
 {% extends "base.html" %}
 
 {% block title %}Panel de fundación | Animal-Life{% endblock %}
 
 {% block content %}
 <div class="container py-5">
-    <h1 class="fw-bold">Panel de la fundación</h1>
-    <p class="text-muted">
-        Espacio de gestión de animales, rescates y adopciones.
-    </p>
 
-    <div class="row g-4 mt-2">
+    <div class="mb-4">
+        <h1 class="fw-bold">Panel de la fundación</h1>
+        <p class="text-muted">
+            Espacio de gestión de animales, rescates, adopciones y citas.
+        </p>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Gestión de animales -->
         <div class="col-md-6 col-lg-4">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
                     <h5>Animales</h5>
                     <p>Consulta y administra los animales registrados.</p>
-                    <span class="badge text-bg-secondary">Próximamente</span>
+                    <a href="{{ url_for('main.gestionar_animales') }}"
+                       class="btn btn-primary">
+                        Gestionar animales
+                    </a>
                 </div>
             </div>
         </div>
 
+        <!-- Gestión de adopciones -->
         <div class="col-md-6 col-lg-4">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
                     <h5>Adopciones</h5>
-                    <p>Gestiona las solicitudes y los procesos de adopción.</p>
-                    <span class="badge text-bg-secondary">Próximamente</span>
+                    <p>
+                        Consulta, aprueba y rechaza las solicitudes de adopción.
+                    </p>
+                    <a href="{{ url_for('main.gestionar_adopciones') }}"
+                       class="btn btn-primary">
+                        Gestionar adopciones
+                    </a>
                 </div>
             </div>
         </div>
 
+        <!-- Gestión de citas -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5>Gestión de citas</h5>
+                    <p>
+                        Consulta las solicitudes y actualiza los estados de atención.
+                    </p>
+                    <a href="{{ url_for('main.gestionar_citas') }}"
+                       class="btn btn-primary">
+                        Gestionar citas
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seguimiento -->
         <div class="col-md-6 col-lg-4">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
@@ -39,6 +71,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 {% endblock %}

@@ -11,33 +11,22 @@
 
     <div class="row g-4 mt-2">
         <div class="col-md-6 col-lg-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5>Agenda de citas</h5>
-                    <p>Consulta las atenciones programadas.</p>
-                    <span class="badge text-bg-secondary">Próximamente</span>
-                </div>
-            </div>
+            <div class="card shadow-sm h-100"><div class="card-body d-flex flex-column">
+                <h5>Agenda de citas</h5><p>Consulta las atenciones programadas y revisa su estado.</p>
+                <a class="btn btn-primary mt-auto" href="{{ url_for('main.agenda_veterinario') }}">Consultar agenda</a>
+            </div></div>
         </div>
-
         <div class="col-md-6 col-lg-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5>Atención animal</h5>
-                    <p>Consulta la información de los animales atendidos.</p>
-                    <span class="badge text-bg-secondary">Próximamente</span>
-                </div>
-            </div>
+            <div class="card shadow-sm h-100"><div class="card-body d-flex flex-column">
+                <h5>Atención animal</h5><p>Registra diagnóstico, tratamiento y observaciones de una cita.</p>
+                <a class="btn btn-primary mt-auto" href="{{ url_for('main.atenciones_veterinarias') }}">Registrar atención</a>
+            </div></div>
         </div>
-
         <div class="col-md-6 col-lg-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5>Seguimiento clínico</h5>
-                    <p>Gestiona la evolución de las atenciones.</p>
-                    <span class="badge text-bg-secondary">Próximamente</span>
-                </div>
-            </div>
+            <div class="card shadow-sm h-100"><div class="card-body">
+                <h5>Seguimiento clínico</h5><p>Consulta y actualiza los registros clínicos creados desde las atenciones.</p>
+                <a class="btn btn-outline-primary" href="{{ url_for('main.atenciones_veterinarias') }}">Consultar registros clínicos</a>
+            </div></div>
         </div>
     </div>
 </div>

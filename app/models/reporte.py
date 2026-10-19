@@ -16,6 +16,16 @@ class Reporte(db.Model):
         db.ForeignKey("usuarios.id"),
         nullable=False
     )
+    
+    responsable_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            "usuarios.id",
+            onupdate="CASCADE",
+            ondelete="SET NULL"
+        ),
+        nullable=True
+    )
 
     animal_id = db.Column(
         db.Integer,
@@ -77,9 +87,15 @@ class Reporte(db.Model):
         back_populates="reportes"
     )
     
+    
     usuario = db.relationship(
-    "Usuario",
-    foreign_keys=[usuario_id]
+        "Usuario",
+        foreign_keys=[usuario_id]
+    )
+
+    responsable = db.relationship(
+        "Usuario",
+        foreign_keys=[responsable_id]
     )
 
     def __repr__(self):

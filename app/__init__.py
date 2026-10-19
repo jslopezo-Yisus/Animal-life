@@ -9,6 +9,9 @@ def create_app():
     from app.models.animal import Animal
     from app.models.estado_reporte import EstadoReporte
     from app.models.reporte import Reporte
+    from app.models.servicio import Servicio
+    from app.models.cita import Cita
+    from app.models.atencion_clinica import AtencionClinica
 
     app = Flask(__name__)
 
@@ -23,6 +26,7 @@ def create_app():
     from app.models.usuario import Usuario
     from app.models.estado_reporte import EstadoReporte
     from app.models.reporte import Reporte
+    from app.models.adopcion import Adopcion
 
     # Registrar controlador principal
     from app.controllers.main_controller import main

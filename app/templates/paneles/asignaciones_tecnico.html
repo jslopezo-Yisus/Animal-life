@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Mis asignaciones | Animal-Life{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div><h1 class="fw-bold mb-1">Mis asignaciones</h1><p class="text-muted mb-0">Casos asignados a tu usuario técnico.</p></div>
+    <a class="btn btn-outline-secondary" href="{{ url_for('main.panel_tecnico') }}">Volver al panel</a>
+  </div>
+  {% with mensajes = get_flashed_messages(with_categories=true) %}{% for categoria, mensaje in mensajes %}
+    <div class="alert alert-{{ categoria }} alert-dismissible fade show" role="alert">{{ mensaje }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button></div>
+  {% endfor %}{% endwith %}
+  <div class="card border-0 shadow-sm"><div class="card-body">
+  {% if reportes %}<div class="table-responsive"><table class="table table-hover align-middle">
+    <thead class="table-light"><tr><th>Reporte</th><th>Tipo</th><th>Fecha</th><th>Dirección</th><th>Estado</th><th>Actualizar estado</th></tr></thead><tbody>
+    {% for reporte in reportes %}<tr>
+      <td><strong>#{{ reporte.id }} · {{ reporte.titulo }}</strong><div class="small text-muted">{{ reporte.descripcion }}</div><a class="small" href="{{ url_for('main.detalle_reporte', reporte_id=reporte.id) }}">Ver detalle</a></td>
+      <td>{{ reporte.tipo }}</td><td>{{ reporte.fecha_creacion.strftime('%d/%m/%Y') }}</td><td>{{ reporte.direccion or 'No registrada' }}</td>
+      <td><span class="badge text-bg-secondary">{{ reporte.estado.nombre }}</span></td><td>
+      {% set siguientes = {'Asignado': ['En proceso'], 'En proceso': ['Resuelto']} %}
+      {% if siguientes.get(reporte.estado.nombre, []) %}<form method="POST" action="{{ url_for('main.actualizar_estado_reporte_tecnico', reporte_id=reporte.id) }}" class="d-flex gap-2">
+        <select name="estado_id" class="form-select form-select-sm" required><option value="">Nuevo estado</option>{% for estado in estados %}{% if estado.nombre in siguientes.get(reporte.estado.nombre, []) %}<option value="{{ estado.id }}">{{ estado.nombre }}</option>{% endif %}{% endfor %}</select>
+        <button class="btn btn-primary btn-sm" type="submit">Guardar</button></form>{% else %}<span class="text-muted">Sin acciones</span>{% endif %}</td>
+    </tr>{% endfor %}</tbody></table></div>
+  {% else %}<div class="text-center py-5"><h5>No tienes casos asignados</h5><p class="text-muted mb-0">Cuando Fundación o Administración te asigne un reporte, aparecerá aquí.</p></div>{% endif %}
+  </div></div>
+  <div class="alert alert-info mt-4">Solo puedes consultar y actualizar reportes asignados a tu propia cuenta. La carga de evidencias se implementará en la siguiente etapa.</div>
+</div>
+{% endblock %}

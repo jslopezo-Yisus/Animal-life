@@ -1,80 +1,71 @@
-
 {% extends "base.html" %}
 
 {% block title %}Detalle del reporte | Animal-Life{% endblock %}
 
 {% block content %}
 <div class="container py-5">
-
     <div class="mb-4">
-        <a href="{{ url_for('main.mis_reportes') }}"
-           class="btn btn-outline-secondary mb-3">
-            Volver a mis reportes
-        </a>
-
+        {% if session.get("user_rol") == "Ciudadano" %}
+        <a href="{{ url_for('main.mis_reportes') }}" class="btn btn-outline-secondary mb-3">Volver a mis reportes</a>
+        {% elif session.get("user_rol") == "Tecnico" %}
+        <a href="{{ url_for('main.asignaciones_tecnico') }}" class="btn btn-outline-secondary mb-3">Volver a mis asignaciones</a>
+        {% else %}
+        <a href="{{ url_for('main.gestionar_reportes') }}" class="btn btn-outline-secondary mb-3">Volver a gestión de reportes</a>
+        {% endif %}
         <h1 class="fw-bold">Detalle del reporte #{{ reporte.id }}</h1>
-        <p class="text-muted">
-            Información y estado actual del caso registrado.
-        </p>
+        <p class="text-muted">Información, estado y evidencias del caso registrado.</p>
+    </div>
+
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+        {% for categoria, mensaje in mensajes %}
+            <div class="alert alert-{{ categoria }} alert-dismissible fade show" role="alert">
+                {{ mensaje }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+                <div><h3>{{ reporte.titulo }}</h3><p class="text-muted mb-0">Tipo: {{ reporte.tipo }}</p></div>
+                <span class="badge text-bg-primary fs-6">{{ reporte.estado.nombre }}</span>
+            </div>
+            <hr>
+            <h5>Descripción de la situación</h5>
+            <p style="white-space: pre-line;">{{ reporte.descripcion }}</p>
+            <div class="row g-4 mt-2">
+                <div class="col-md-6"><strong>Dirección del caso</strong><p>{{ reporte.direccion or "No especificada" }}</p></div>
+                <div class="col-md-6"><strong>Fecha de creación</strong><p>{{ reporte.fecha_creacion.strftime('%d/%m/%Y %H:%M') }}</p></div>
+                <div class="col-md-6"><strong>Última actualización</strong><p>{{ reporte.fecha_actualizacion.strftime('%d/%m/%Y %H:%M') }}</p></div>
+                <div class="col-md-6"><strong>Identificador del caso</strong><p>#{{ reporte.id }}</p></div>
+                <div class="col-md-6"><strong>Responsable</strong><p>{% if reporte.responsable %}{{ reporte.responsable.nombre }} {{ reporte.responsable.apellido }}{% else %}Sin asignar{% endif %}</p></div>
+            </div>
+            <div class="alert alert-info mt-3 mb-0">El estado refleja el avance registrado por el personal autorizado de Animal-Life.</div>
+        </div>
     </div>
 
     <div class="card shadow-sm border-0">
         <div class="card-body p-4">
+            <h2 class="h4 fw-bold mb-3">Evidencias del caso</h2>
+            {% if evidencias %}
+            <div class="table-responsive mb-4"><table class="table table-hover align-middle">
+                <thead class="table-light"><tr><th>Archivo</th><th>Tipo</th><th>Fecha de carga</th><th>Acción</th></tr></thead>
+                <tbody>{% for evidencia in evidencias %}
+                    <tr><td>{{ evidencia.nombre_archivo }}</td><td>{{ evidencia.tipo_archivo or "No especificado" }}</td><td>{{ evidencia.fecha_subida.strftime('%d/%m/%Y %H:%M') }}</td><td><a class="btn btn-sm btn-outline-primary" href="{{ url_for('static', filename=evidencia.ruta_archivo) }}" target="_blank" rel="noopener">Ver archivo</a></td></tr>
+                {% endfor %}</tbody>
+            </table></div>
+            {% else %}<p class="text-muted">Este reporte todavía no tiene evidencias adjuntas.</p>{% endif %}
 
-            <div class="d-flex flex-wrap justify-content-between
-                        align-items-start gap-3 mb-4">
-                <div>
-                    <h3>{{ reporte.titulo }}</h3>
-                    <p class="text-muted mb-0">
-                        Tipo: {{ reporte.tipo }}
-                    </p>
-                </div>
-
-                <span class="badge text-bg-primary fs-6">
-                    {{ reporte.estado.nombre }}
-                </span>
-            </div>
-
-            <hr>
-
-            <h5>Descripción de la situación</h5>
-            <p style="white-space: pre-line;">{{ reporte.descripcion }}</p>
-
-            <div class="row g-4 mt-2">
-
-                <div class="col-md-6">
-                    <strong>Dirección del caso</strong>
-                    <p>{{ reporte.direccion or "No especificada" }}</p>
-                </div>
-
-                <div class="col-md-6">
-                    <strong>Fecha de creación</strong>
-                    <p>
-                        {{ reporte.fecha_creacion.strftime('%d/%m/%Y %H:%M') }}
-                    </p>
-                </div>
-
-                <div class="col-md-6">
-                    <strong>Última actualización</strong>
-                    <p>
-                        {{ reporte.fecha_actualizacion.strftime('%d/%m/%Y %H:%M') }}
-                    </p>
-                </div>
-
-                <div class="col-md-6">
-                    <strong>Identificador del caso</strong>
-                    <p>#{{ reporte.id }}</p>
-                </div>
-
-            </div>
-
-            <div class="alert alert-info mt-3 mb-0">
-                El estado refleja el avance registrado por el personal
-                autorizado de Animal-Life.
-            </div>
-
+            {% if puede_subir_evidencia %}
+            <hr><h3 class="h5">Adjuntar evidencia</h3>
+            <p class="text-muted">Formatos permitidos: JPG, JPEG, PNG, WEBP y PDF. Tamaño máximo: 5 MB.</p>
+            <form method="POST" action="{{ url_for('main.subir_evidencia_reporte', reporte_id=reporte.id) }}" enctype="multipart/form-data">
+                <div class="mb-3"><label for="archivo" class="form-label">Seleccionar archivo</label><input class="form-control" type="file" id="archivo" name="archivo" accept=".jpg,.jpeg,.png,.webp,.pdf" required></div>
+                <button type="submit" class="btn btn-primary">Subir evidencia</button>
+            </form>
+            {% endif %}
         </div>
     </div>
-
 </div>
 {% endblock %}

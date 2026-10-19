@@ -1,0 +1,243 @@
+
+{% extends "base.html" %}
+
+{% block title %}Gestión de animales | Animal-Life{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h1 class="fw-bold mb-1">Gestión de animales</h1>
+            <p class="text-muted mb-0">
+                Administra el registro y estado de los animales de Animal-Life.
+            </p>
+        </div>
+
+        <a href="{{ url_for('main.crear_animal') }}"
+           class="btn btn-primary">
+            + Registrar animal
+        </a>
+    </div>
+
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+        {% if mensajes %}
+            {% for categoria, mensaje in mensajes %}
+                <div class="alert alert-{{ categoria }} alert-dismissible fade show"
+                     role="alert">
+                    {{ mensaje }}
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Cerrar"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <form method="GET"
+                  action="{{ url_for('main.gestionar_animales') }}"
+                  class="row g-3">
+
+                <div class="col-md-5">
+                    <label for="buscar" class="form-label">
+                        Buscar animal
+                    </label>
+                    <input type="text"
+                           id="buscar"
+                           name="buscar"
+                           class="form-control"
+                           placeholder="Nombre, raza o color"
+                           value="{{ buscar }}">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="especie" class="form-label">
+                        Especie
+                    </label>
+                    <select id="especie"
+                            name="especie"
+                            class="form-select">
+                        <option value="">Todas las especies</option>
+                        {% for item in especies %}
+                            <option value="{{ item }}"
+                                {% if filtro_especie == item %}selected{% endif %}>
+                                {{ item }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="estado" class="form-label">
+                        Estado
+                    </label>
+                    <select id="estado"
+                            name="estado"
+                            class="form-select">
+                        <option value="">Todos los estados</option>
+                        {% for item in estados %}
+                            <option value="{{ item }}"
+                                {% if filtro_estado == item %}selected{% endif %}>
+                                {{ item }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-1 d-flex align-items-end">
+                    <button type="submit"
+                            class="btn btn-outline-primary w-100">
+                        <span class="d-md-none d-lg-inline">Filtrar</span>
+                        <span class="d-lg-none">Ir</span>
+                    </button>
+                </div>
+
+                <div class="col-12">
+                    <a href="{{ url_for('main.gestionar_animales') }}"
+                       class="text-decoration-none">
+                        Limpiar filtros
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0">
+                Animales registrados
+                <span class="badge text-bg-secondary">
+                    {{ animales|length }}
+                </span>
+            </h5>
+        </div>
+
+        <div class="card-body p-0">
+            {% if animales %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Especie</th>
+                                <th>Raza</th>
+                                <th>Sexo</th>
+                                <th>Estado</th>
+                                <th>Registro</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for animal in animales %}
+                                <tr>
+                                    <td>{{ animal.id }}</td>
+                                    <td class="fw-semibold">
+                                        {{ animal.nombre }}
+                                    </td>
+                                    <td>{{ animal.especie }}</td>
+                                    <td>{{ animal.raza or 'No especificada' }}</td>
+                                    <td>{{ animal.sexo or 'No especificado' }}</td>
+                                    <td>
+                                        {% if animal.estado == 'Disponible' %}
+                                            <span class="badge text-bg-success">
+                                                {{ animal.estado }}
+                                            </span>
+                                        {% elif animal.estado == 'Adoptado' %}
+                                            <span class="badge text-bg-primary">
+                                                {{ animal.estado }}
+                                            </span>
+                                        {% elif animal.estado == 'En tratamiento' %}
+                                            <span class="badge text-bg-warning">
+                                                {{ animal.estado }}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge text-bg-secondary">
+                                                {{ animal.estado }}
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if animal.fecha_registro %}
+                                            {{ animal.fecha_registro.strftime('%d/%m/%Y') }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <a href="{{ url_for('main.editar_animal', animal_id=animal.id) }}"
+                                               class="btn btn-sm btn-outline-primary">
+                                                Editar
+                                            </a>
+
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-secondary"
+                                                    data-bs-toggle="collapse"
+                                                    data-bs-target="#estado-{{ animal.id }}"
+                                                    aria-expanded="false">
+                                                Estado
+                                            </button>
+                                        </div>
+
+                                        <div class="collapse mt-2"
+                                             id="estado-{{ animal.id }}">
+                                            <form method="POST"
+                                                  action="{{ url_for('main.cambiar_estado_animal', animal_id=animal.id) }}"
+                                                  class="d-flex gap-2">
+                                                <select name="estado"
+                                                        class="form-select form-select-sm"
+                                                        aria-label="Nuevo estado">
+                                                    {% for item in estados %}
+                                                        <option value="{{ item }}"
+                                                            {% if animal.estado == item %}selected{% endif %}>
+                                                            {{ item }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-primary">
+                                                    Guardar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-5 px-3">
+                    <h5 class="mb-2">No hay animales para mostrar</h5>
+                    <p class="text-muted mb-3">
+                        Registra un animal o modifica los filtros de búsqueda.
+                    </p>
+                    <a href="{{ url_for('main.crear_animal') }}"
+                       class="btn btn-primary">
+                        Registrar primer animal
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mt-4">
+        {% if session.get('user_rol') == 'Administrador' %}
+            <a href="{{ url_for('main.panel_administrador') }}"
+               class="btn btn-outline-secondary">
+                Volver al panel administrativo
+            </a>
+        {% else %}
+            <a href="{{ url_for('main.panel_fundacion') }}"
+               class="btn btn-outline-secondary">
+                Volver al panel de la fundación
+            </a>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

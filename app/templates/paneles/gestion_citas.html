@@ -1,0 +1,140 @@
+
+{% extends "base.html" %}
+
+{% block title %}Gestión de citas | Animal-Life{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h1 class="fw-bold mb-1">Gestión de citas</h1>
+            <p class="text-muted mb-0">
+                Consulta las solicitudes y actualiza su estado.
+            </p>
+        </div>
+        <a href="{{ url_for('main.panel') }}"
+           class="btn btn-outline-secondary">Volver al panel</a>
+    </div>
+
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+        {% for categoria, mensaje in mensajes %}
+            <div class="alert alert-{{ categoria }} alert-dismissible fade show">
+                {{ mensaje }}
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <form method="GET"
+                  action="{{ url_for('main.gestionar_citas') }}"
+                  class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <label for="estado" class="form-label">Estado</label>
+                    <select name="estado" id="estado" class="form-select">
+                        <option value="">Todos los estados</option>
+                        {% for estado in estados %}
+                            <option value="{{ estado }}"
+                                {% if filtro_estado == estado %}selected{% endif %}>
+                                {{ estado }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary" type="submit">Filtrar</button>
+                    <a href="{{ url_for('main.gestionar_citas') }}"
+                       class="btn btn-outline-secondary">Limpiar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0">
+                Citas registradas
+                <span class="badge text-bg-secondary">{{ citas|length }}</span>
+            </h5>
+        </div>
+
+        <div class="card-body p-0">
+            {% if citas %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Solicitante</th>
+                                <th>Animal</th>
+                                <th>Servicio</th>
+                                <th>Fecha y hora</th>
+                                <th>Estado actual</th>
+                                <th>Actualizar estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cita in citas %}
+                                <tr>
+                                    <td>{{ cita.id }}</td>
+                                    <td>
+                                        {{ cita.usuario.nombre }}
+                                        {{ cita.usuario.apellido }}
+                                        <br>
+                                        <small class="text-muted">
+                                            {{ cita.usuario.correo }}
+                                        </small>
+                                    </td>
+                                    <td>{{ cita.animal.nombre }}</td>
+                                    <td>{{ cita.servicio.nombre }}</td>
+                                    <td>
+                                        {{ cita.fecha.strftime('%d/%m/%Y') }}
+                                        <br>
+                                        {{ cita.hora.strftime('%H:%M') }}
+                                    </td>
+                                    <td>
+                                        <span class="badge text-bg-secondary">
+                                            {{ cita.estado }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if transiciones_cita[cita.estado] %}
+                                            <form method="POST"
+                                                  action="{{ url_for('main.actualizar_estado_cita', cita_id=cita.id) }}"
+                                                  class="d-flex gap-2">
+                                                <select name="estado"
+                                                        class="form-select form-select-sm"
+                                                        required>
+                                                    {% for estado in transiciones_cita[cita.estado] %}
+                                                        <option value="{{ estado }}">{{ estado }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-primary">
+                                                    Guardar
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <span class="text-muted">Cita cerrada</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center p-5">
+                    <h5>No hay citas registradas</h5>
+                    <p class="text-muted mb-0">
+                        Las solicitudes aparecerán aquí cuando un ciudadano registre una cita.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

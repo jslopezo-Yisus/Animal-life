@@ -1,0 +1,143 @@
+
+{% extends "base.html" %}
+
+{% block title %}Adopciones | Animal-Life{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h1 class="fw-bold mb-1">Encuentra tu próximo compañero</h1>
+            <p class="text-muted mb-0">
+                Conoce los animales disponibles y envía tu solicitud de adopción.
+            </p>
+        </div>
+        <a href="{{ url_for('main.panel_ciudadano') }}"
+           class="btn btn-outline-secondary">
+            Volver a mi espacio
+        </a>
+    </div>
+
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+        {% if mensajes %}
+            {% for categoria, mensaje in mensajes %}
+                <div class="alert alert-{{ categoria }} alert-dismissible fade show">
+                    {{ mensaje }}
+                    <button type="button" class="btn-close"
+                            data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <h4 class="mb-3">Animales disponibles</h4>
+
+    <div class="row g-4 mb-5">
+        {% for animal in animales %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0">
+                    {% if animal.imagen %}
+                        <img src="{{ url_for('static', filename=animal.imagen) }}"
+                             class="card-img-top"
+                             alt="{{ animal.nombre }}"
+                             style="height: 220px; object-fit: cover;">
+                    {% else %}
+                        <div class="d-flex align-items-center justify-content-center bg-light"
+                             style="height: 150px;">
+                            <span class="text-muted">🐾 Animal-Life</span>
+                        </div>
+                    {% endif %}
+
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="card-title fw-bold">{{ animal.nombre }}</h5>
+                            <span class="badge text-bg-success">Disponible</span>
+                        </div>
+
+                        <p class="text-muted mb-2">
+                            {{ animal.especie }}
+                            {% if animal.raza %} · {{ animal.raza }}{% endif %}
+                        </p>
+
+                        {% if animal.sexo %}
+                            <p class="mb-2">Sexo: {{ animal.sexo }}</p>
+                        {% endif %}
+
+                        {% if animal.tamano %}
+                            <p class="mb-2">Tamaño: {{ animal.tamano }}</p>
+                        {% endif %}
+
+                        <p class="card-text flex-grow-1">
+                            {{ animal.descripcion or 'Conoce a este animal y solicita su adopción.' }}
+                        </p>
+
+                        <form method="POST"
+                              action="{{ url_for('main.solicitar_adopcion', animal_id=animal.id) }}"
+                              onsubmit="return confirm('¿Deseas enviar una solicitud de adopción para {{ animal.nombre }}?');">
+                            <button type="submit" class="btn btn-primary w-100">
+                                Solicitar adopción
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    En este momento no hay animales disponibles para adopción.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+            <h4 class="mb-0">Mis solicitudes</h4>
+        </div>
+
+        <div class="card-body p-0">
+            {% if solicitudes %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Animal</th>
+                                <th>Fecha de solicitud</th>
+                                <th>Estado</th>
+                                <th>Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for solicitud in solicitudes %}
+                                <tr>
+                                    <td>{{ solicitud.animal.nombre }}</td>
+                                    <td>
+                                        {{ solicitud.fecha_solicitud.strftime('%d/%m/%Y %H:%M')
+                                           if solicitud.fecha_solicitud else '-' }}
+                                    </td>
+                                    <td>
+                                        {% if solicitud.estado == 'Pendiente' %}
+                                            <span class="badge text-bg-warning">Pendiente</span>
+                                        {% elif solicitud.estado == 'Aprobada' %}
+                                            <span class="badge text-bg-success">Aprobada</span>
+                                        {% else %}
+                                            <span class="badge text-bg-secondary">Rechazada</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ solicitud.observaciones or '-' }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted p-3 mb-0">
+                    Todavía no has enviado solicitudes de adopción.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

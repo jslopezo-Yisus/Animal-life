@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Atención clínica | Animal-Life{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div><h1 class="fw-bold mb-1">Atención animal</h1><p class="text-muted mb-0">Registra y consulta la información clínica de las citas.</p></div>
+    <a class="btn btn-outline-secondary" href="{{ url_for('main.panel_veterinario') }}">Volver al panel</a>
+  </div>
+  {% if citas %}
+    <div class="accordion" id="accordionAtenciones">
+      {% for cita in citas %}
+      {% set atencion = atenciones.get(cita.id) %}
+      <div class="accordion-item mb-3 border rounded shadow-sm">
+        <h2 class="accordion-header" id="heading{{ cita.id }}">
+          <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ cita.id }}" aria-expanded="{{ 'true' if loop.first else 'false' }}">
+            <span class="me-3"><strong>{{ cita.animal.nombre if cita.animal else 'Animal sin nombre' }}</strong> · {{ cita.fecha.strftime('%d/%m/%Y') }} {{ cita.hora.strftime('%H:%M') }}</span>
+            <span class="badge text-bg-secondary">{{ cita.estado }}</span>
+            {% if atencion %}<span class="badge text-bg-success ms-2">Registro clínico creado</span>{% endif %}
+          </button>
+        </h2>
+        <div id="collapse{{ cita.id }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" data-bs-parent="#accordionAtenciones">
+          <div class="accordion-body">
+            <div class="row mb-3"><div class="col-md-4"><strong>Ciudadano:</strong> {{ cita.usuario.nombre if cita.usuario else 'Sin usuario' }}</div><div class="col-md-4"><strong>Servicio:</strong> {{ cita.servicio.nombre if cita.servicio else 'Sin servicio' }}</div><div class="col-md-4"><strong>Observaciones de la cita:</strong> {{ cita.observaciones or 'Sin observaciones' }}</div></div>
+            {% if atencion and atencion.veterinario_id != session.get('user_id') %}
+              <div class="alert alert-info mb-0">Este registro clínico fue creado por otro veterinario y se muestra en modo de consulta.</div>
+              <p class="mt-3"><strong>Diagnóstico:</strong> {{ atencion.diagnostico }}</p><p><strong>Tratamiento:</strong> {{ atencion.tratamiento or 'No registrado' }}</p><p><strong>Observaciones:</strong> {{ atencion.observaciones or 'No registradas' }}</p>
+            {% else %}
+            <form method="POST" action="{{ url_for('main.guardar_atencion_veterinaria', cita_id=cita.id) }}">
+              <div class="mb-3"><label class="form-label" for="diagnostico{{ cita.id }}">Diagnóstico *</label><textarea class="form-control" id="diagnostico{{ cita.id }}" name="diagnostico" rows="3" required>{{ atencion.diagnostico if atencion else '' }}</textarea></div>
+              <div class="mb-3"><label class="form-label" for="tratamiento{{ cita.id }}">Tratamiento</label><textarea class="form-control" id="tratamiento{{ cita.id }}" name="tratamiento" rows="2">{{ atencion.tratamiento if atencion and atencion.tratamiento else '' }}</textarea></div>
+              <div class="mb-3"><label class="form-label" for="observaciones{{ cita.id }}">Observaciones clínicas</label><textarea class="form-control" id="observaciones{{ cita.id }}" name="observaciones" rows="2">{{ atencion.observaciones if atencion and atencion.observaciones else '' }}</textarea></div>
+              <button type="submit" class="btn btn-primary">{{ 'Actualizar registro clínico' if atencion else 'Guardar atención clínica' }}</button>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="card"><div class="card-body text-center py-5"><h5>No hay citas disponibles para atención clínica</h5><p class="text-muted mb-0">Las citas confirmadas, en proceso o completadas aparecerán aquí.</p></div></div>
+  {% endif %}
+</div>
+{% endblock %}

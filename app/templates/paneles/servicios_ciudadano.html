@@ -1,0 +1,167 @@
+
+{% extends "base.html" %}
+
+{% block title %}Servicios | Animal-Life{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h1 class="fw-bold mb-1">Servicios para tu mascota</h1>
+            <p class="text-muted mb-0">
+                Consulta nuestros servicios y solicita una cita.
+            </p>
+        </div>
+        <a href="{{ url_for('main.panel_ciudadano') }}"
+           class="btn btn-outline-secondary">Volver a mi panel</a>
+    </div>
+
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+        {% for categoria, mensaje in mensajes %}
+            <div class="alert alert-{{ categoria }} alert-dismissible fade show">
+                {{ mensaje }}
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">Solicitar una cita</h5>
+                </div>
+
+                <div class="card-body">
+                    {% if servicios and animales %}
+                        <form method="POST"
+                              action="{{ url_for('main.crear_cita') }}">
+
+                            <div class="mb-3">
+                                <label for="servicio_id" class="form-label">
+                                    Servicio
+                                </label>
+                                <select id="servicio_id" name="servicio_id"
+                                        class="form-select" required>
+                                    <option value="">Selecciona un servicio</option>
+                                    {% for servicio in servicios %}
+                                        <option value="{{ servicio.id }}">
+                                            {{ servicio.nombre }}
+                                            {% if servicio.precio is not none %}
+                                                · ${{ "{:,.0f}".format(servicio.precio|float) }}
+                                            {% endif %}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="animal_id" class="form-label">
+                                    Animal
+                                </label>
+                                <select id="animal_id" name="animal_id"
+                                        class="form-select" required>
+                                    <option value="">Selecciona un animal</option>
+                                    {% for animal in animales %}
+                                        <option value="{{ animal.id }}">
+                                            {{ animal.nombre }} · {{ animal.especie }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="fecha" class="form-label">Fecha</label>
+                                    <input type="date" id="fecha" name="fecha"
+                                           class="form-control"
+                                           min="{{ hoy }}" required>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="hora" class="form-label">Hora</label>
+                                    <input type="time" id="hora" name="hora"
+                                           class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 mb-3">
+                                <label for="observaciones" class="form-label">
+                                    Observaciones
+                                </label>
+                                <textarea id="observaciones" name="observaciones"
+                                          class="form-control" rows="3"
+                                          maxlength="5000"
+                                          placeholder="Describe brevemente el motivo de la cita"></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100">
+                                Solicitar cita
+                            </button>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-info mb-0">
+                            {% if not servicios %}
+                                No hay servicios activos disponibles.
+                            {% else %}
+                                No hay animales disponibles para seleccionar.
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <h4 class="mb-3">Nuestros servicios</h4>
+
+            <div class="row g-3">
+                {% for servicio in servicios %}
+                    <div class="col-md-6">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-body">
+                                <h5 class="fw-bold">{{ servicio.nombre }}</h5>
+
+                                <p class="text-muted">
+                                    {{ servicio.descripcion or 'Servicio de atención y bienestar animal.' }}
+                                </p>
+
+                                <p class="mb-1">
+                                    <strong>Precio:</strong>
+                                    {% if servicio.precio is not none %}
+                                        ${{ "{:,.0f}".format(servicio.precio|float) }}
+                                    {% else %}
+                                        Por confirmar
+                                    {% endif %}
+                                </p>
+
+                                {% if servicio.duracion_minutos %}
+                                    <p class="mb-0">
+                                        <strong>Duración:</strong>
+                                        {{ servicio.duracion_minutos }} minutos
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            No hay servicios activos para mostrar.
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="mt-4">
+                <a href="{{ url_for('main.mis_citas') }}"
+                   class="btn btn-outline-primary">
+                    Consultar mis citas
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

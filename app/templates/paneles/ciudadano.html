@@ -29,20 +29,35 @@
         <div class="col-md-6 col-lg-4">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
-                    <h5>Servicios</h5>
-                    <p>Consulta los servicios disponibles para animales.</p>
-                    <span class="badge text-bg-secondary">Próximamente</span>
-                </div>
+    <h5>Servicios</h5>
+    <p>Consulta los servicios disponibles para el bienestar animal.</p>
+    <a href="{{ url_for('main.consultar_servicios') }}"
+       class="btn btn-primary">Consultar servicios</a>
+</div>
             </div>
         </div>
 
         <div class="col-md-6 col-lg-4">
+    <div class="card shadow-sm h-100">
+        <div class="card-body">
+            <h5>Adopciones</h5>
+            <p>Explora los animales disponibles y consulta tus solicitudes.</p>
+            <a href="{{ url_for('main.animales_para_adopcion') }}"
+               class="btn btn-primary">
+                Ver adopciones
+            </a>
+        </div>
+    </div>
+</div>
+
+        <div class="col-md-6 col-lg-4">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
-                    <h5>Mis citas</h5>
-                    <p>Consulta y gestiona tus citas.</p>
-                    <span class="badge text-bg-secondary">Próximamente</span>
-                </div>
+    <h5>Mis citas</h5>
+    <p>Consulta tus solicitudes y administra tus citas pendientes.</p>
+    <a href="{{ url_for('main.mis_citas') }}"
+       class="btn btn-primary">Consultar mis citas</a>
+</div>
             </div>
         </div>
     </div>
